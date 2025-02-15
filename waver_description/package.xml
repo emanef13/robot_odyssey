@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>waver_description</name>
+  <version>1.0.0</version>
+  <description>The waver_description package</description>
+
+  <author email="gugomog3@gmail.com">Gustavo Gomez</author>
+  <maintainer email="gugomog3@gmail.com">Gustavo Gomez</maintainer>
+
+  <license>Apache 2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>urdf</depend>
+  <depend>xacro</depend>
+  <depend>joint_state_publisher</depend>
+  <depend>robot_state_publisher</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+
+</package>
