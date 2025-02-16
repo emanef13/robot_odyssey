@@ -74,7 +74,7 @@
   </gazebo>
 
   <gazebo>
-    <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
+    <!-- <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
       <robotNamespace></robotNamespace>
       <updateRate>100.0</updateRate>
       <leftFrontJoint>wheel_front_left_joint</leftFrontJoint>
@@ -95,7 +95,7 @@
       <covariance_y>0.0001</covariance_y>
       <covariance_yaw>0.01</covariance_yaw>
       <broadcastTF>true</broadcastTF>
-    </plugin>
+    </plugin> -->
   </gazebo>
 
 </robot>
