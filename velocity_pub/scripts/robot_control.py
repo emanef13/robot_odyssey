@@ -30,39 +30,20 @@ class Commander(Node):
     def timer_callback(self):
         global vel_msg, mode_selection
 
-        # opposite phase
-        if(mode_selection == 1):
-            
-            vel_steerring_offset = vel_msg.angular.z * self.wheel_steering_y_offset
-            sign = np.sign(vel_msg.linear.x)
+        """Computes and publishes wheel velocities based on cmd_vel input."""
+        # Compute left and right wheel velocities using differential drive kinematics
+        v_l = (vel_msg.linear.x - vel_msg.angular.z * self.wheel_base / 2) / self.wheel_radius
+        v_r = (vel_msg.linear.x + vel_msg.angular.z * self.wheel_base / 2) / self.wheel_radius
 
-            self.vel[0] = sign*math.hypot(vel_msg.linear.x - vel_msg.angular.z*self.steering_track/2, vel_msg.angular.z*self.wheel_base/2) - vel_steerring_offset
-            self.vel[1] = sign*math.hypot(vel_msg.linear.x + vel_msg.angular.z*self.steering_track/2, vel_msg.angular.z*self.wheel_base/2) + vel_steerring_offset
-            self.vel[2] = sign*math.hypot(vel_msg.linear.x - vel_msg.angular.z*self.steering_track/2, vel_msg.angular.z*self.wheel_base/2) - vel_steerring_offset
-            self.vel[3] = sign*math.hypot(vel_msg.linear.x + vel_msg.angular.z*self.steering_track/2, vel_msg.angular.z*self.wheel_base/2) + vel_steerring_offset
+        # Apply same velocity to front and rear wheels
+        self.vel[0] = v_l  # Left front
+        self.vel[1] = v_r  # Right front
+        self.vel[2] = v_l  # Left rear
+        self.vel[3] = v_r  # Right rear
 
-        # in-phase
-        elif(mode_selection == 2):
-
-            V = math.hypot(vel_msg.linear.x, vel_msg.linear.y)
-            sign = np.sign(vel_msg.linear.x)
-            
-            self.vel[:] = sign*V
-            
-        # pivot turn
-        elif(mode_selection == 3):
-            
-            self.vel[0] = -vel_msg.angular.z
-            self.vel[1] = vel_msg.angular.z
-            self.vel[2] = self.vel[0]
-            self.vel[3] = self.vel[1]
-
-        else:
-            self.vel[:] = 0
-
-        vel_array = Float64MultiArray(data=self.vel) 
+        # Publish wheel velocities
+        vel_array = Float64MultiArray(data=self.vel)
         self.pub_vel.publish(vel_array)
-        self.vel[:] = 0
 
 class Joy_subscriber(Node):
 
@@ -78,18 +59,8 @@ class Joy_subscriber(Node):
     def listener_callback(self, data):
         global vel_msg, mode_selection
 
-        if(data.buttons[0] == 1):   # in-phase # A button of Xbox 360 controller
-            mode_selection = 2
-        elif(data.buttons[4] == 1): # opposite phase # LB button of Xbox 360 controller
-            mode_selection = 1
-        elif(data.buttons[5] == 1): # pivot turn # RB button of Xbox 360 controller
-            mode_selection = 3
-        else:
-            mode_selection = 4
-
-        vel_msg.linear.x = data.axes[1]*7.5
-        vel_msg.linear.y = data.axes[0]*7.5
-        vel_msg.angular.z = data.axes[3]*10
+        vel_msg.linear.x = data.axes[1]*0.3
+        vel_msg.angular.z = data.axes[2]
 
 class Teleop_subscriber(Node):
 
@@ -105,22 +76,20 @@ class Teleop_subscriber(Node):
     def listener_callback(self, data):
         global vel_msg, mode_selection
 
-        mode_selection = 3
-
         vel_msg.linear.x = data.linear.x
-        vel_msg.linear.y = data.linear.y
         vel_msg.angular.z = data.angular.z
 
 if __name__ == '__main__':
     rclpy.init(args=None)
     
     commander = Commander()
-    # joy_subscriber = Joy_subscriber()
+    joy_subscriber = Joy_subscriber()
     teleop_subscriber = Teleop_subscriber()
 
     executor = rclpy.executors.MultiThreadedExecutor()
     executor.add_node(commander)
     executor.add_node(teleop_subscriber)
+    executor.add_node(joy_subscriber)
 
     executor_thread = threading.Thread(target=executor.spin, daemon=True)
     executor_thread.start()

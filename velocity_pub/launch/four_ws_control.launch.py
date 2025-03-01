@@ -15,6 +15,6 @@ def generate_launch_description():
             cmd=['gnome-terminal', '--', 'bash', '-c', 'ros2 run teleop_twist_keyboard teleop_twist_keyboard'],
             output='screen'
         ),
-        # Node(package = "teleop_twist_keyboard",executable = "teleop_twist_keyboard"),
+        Node(package = "joy",executable = "joy_node"),
         Node(package='velocity_pub', executable='robot_control.py', output='screen'),
     ])
