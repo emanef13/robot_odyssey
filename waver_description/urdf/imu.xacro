@@ -31,7 +31,7 @@
         <child link="imu_link" />
     </joint>
 
-    <gazebo reference="imu_link">
+    <!-- <gazebo reference="imu_link">
         <material>Gazebo/Orange</material>
         <gravity>true</gravity>
         <sensor name="imu_sensor" type="imu">
@@ -39,7 +39,7 @@
             <update_rate>100</update_rate>
             <visualize>true</visualize>
             <topic>imu</topic>
-            <!-- <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+            <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
                 <topicName>imu</topicName>
                 <bodyName>imu_link</bodyName>
                 <updateRateHZ>10.0</updateRateHZ>
@@ -48,8 +48,8 @@
                 <rpyOffset>0 0 0</rpyOffset>
                 <frameName>imu_link</frameName>
                 <initialOrientationAsReference>false</initialOrientationAsReference>
-            </plugin> -->
+            </plugin>
             <pose>0 0 0 0 0 0</pose>
         </sensor>
-    </gazebo>
+    </gazebo> -->
 </robot>
