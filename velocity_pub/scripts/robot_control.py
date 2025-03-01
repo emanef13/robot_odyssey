@@ -15,12 +15,9 @@ class Commander(Node):
 
     def __init__(self):
         super().__init__('commander')
-        timer_period = 0.02
-        self.wheel_seperation = 0.122
-        self.wheel_base = 0.156
-        self.wheel_radius = 0.026
-        self.wheel_steering_y_offset = 0.0
-        self.steering_track = self.wheel_seperation - 2*self.wheel_steering_y_offset
+        timer_period = 0.02 # 50 Hz control loop
+        self.wheel_base = 0.156 # Distance between left and right wheels (meters)
+        self.wheel_radius = 0.026 # Wheel radius (meters)
 
         self.vel = np.array([0,0,0,0], float) #left_front, right_front, left_rear, right_rear
 

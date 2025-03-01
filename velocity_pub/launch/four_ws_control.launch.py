@@ -10,9 +10,9 @@ def generate_launch_description():
             default_value='true',
             description='Use simulation (Gazebo) clock if true'),
         
-        # Launch teleop_twist_keyboard in a new gnome-terminal
+        # Launch teleop_twist_keyboard in a new gnome-terminal and ensure it closes when launch file is terminated
         ExecuteProcess(
-            cmd=['gnome-terminal', '--', 'bash', '-c', 'ros2 run teleop_twist_keyboard teleop_twist_keyboard'],
+            cmd=['gnome-terminal', '--disable-factory', '--', 'bash', '-c', 'ros2 run teleop_twist_keyboard teleop_twist_keyboard; exec bash'],
             output='screen'
         ),
         Node(package = "joy",executable = "joy_node"),
