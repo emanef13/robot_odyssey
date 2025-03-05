@@ -3,6 +3,7 @@ project(waver_gazebo)
 
 # 1) Find ament_cmake rather than catkin
 find_package(ament_cmake REQUIRED)
+find_package(xacro REQUIRED)
 
 # If you need any specific ROS 2 / Gazebo dependencies:
 # find_package(gazebo_ros REQUIRED)

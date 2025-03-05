@@ -1,101 +1,158 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="waver_gazebo">
+  <xacro:macro name="waver_robot_gazebo">
 
-  <xacro:include filename="$(find waver_description)/urdf/util.xacro" />
+    <xacro:include filename="$(find waver_description)/urdf/util.xacro" />
 
-  <gazebo reference="base_link">
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>false</selfCollide>
-    <material>Gazebo/DarkGrey</material>
-  </gazebo>
+      <!-- =============== Gazebo =============== -->
+      <gazebo>
+        <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+          <parameters>$(find waver_description)/config/waver_robot_sim.yaml</parameters>
+        </plugin>
+        <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+          <render_engine>ogre2</render_engine>
+        </plugin>
+        <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu">
+        </plugin>
+      </gazebo>
 
-  <gazebo reference="top_shell_link">
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>false</selfCollide>
-    <material>Gazebo/DarkGrey</material>
-  </gazebo>
+      <gazebo reference="ldlidar_link" >
+        <sensor name="${lidar_model}" type="gpu_lidar">
+          <gz_frame_id>ldlidar_link</gz_frame_id>
+          <topic>scan</topic>
+          <update_rate>${lidar_frequency}</update_rate>
+          <lidar>
+            <scan>
+              <horizontal>
+                <samples>${lidar_samples}</samples>
+                <resolution>${lidar_resolution}</resolution>
+                <min_angle>${lidar_min_angle}</min_angle>
+                <max_angle>${lidar_max_angle}</max_angle>
+              </horizontal>
+              <vertical>
+                <samples>1</samples>
+                <resolution>0.1</resolution>
+                <min_angle>0.0</min_angle>
+                <max_angle>0.0</max_angle>
+              </vertical>
+            </scan>
+            <range>
+              <min>${lidar_min_range}</min>
+              <max>${lidar_max_range}</max>
+              <resolution>0.01</resolution>
+            </range>
+            <frame_id>/ldlidar_link</frame_id>
+          </lidar>
+          <alwaysOn>1</alwaysOn>
+          <visualize>true</visualize>
+        </sensor>
+      </gazebo>
 
-  <gazebo reference="accessories_link">
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>false</selfCollide>
-    <material>Gazebo/Black</material>
-  </gazebo>
+      <gazebo reference="imu_link" >
+        <sensor name="imu_sensor" type="imu">
+          <gz_frame_id>imu_link</gz_frame_id>
+          <topic>imu</topic>
+          <update_rate>200</update_rate>
+          <always_on>1</always_on>
+          <visualize>true</visualize>
+        </sensor>
+      </gazebo>
 
-  <gazebo reference="accessories1_link">
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>false</selfCollide>
-    <material>Gazebo/Black</material>
-  </gazebo>
+      <gazebo reference="base_link">
+        <sensor name="camera_sensor" type="camera">
+          <gz_frame_id>base_link</gz_frame_id>
+          <topic>camera/image_raw</topic>
+          <update_rate>30</update_rate>
+          <camera>
+            <horizontal_fov>1.57</horizontal_fov> <!-- 90 degrees FOV -->
+            <image>
+              <width>640</width>
+              <height>480</height>
+              <format>R8G8B8</format> <!-- RGB format -->
+            </image>
+            <clip>
+              <near>0.01</near>
+              <far>100.0</far>
+            </clip>
+            <noise>
+              <type>gaussian</type>
+              <mean>0.0</mean>
+              <stddev>0.007</stddev>
+            </noise>
+          </camera>
+          <always_on>1</always_on>
+          <visualize>true</visualize>
+        </sensor>
+      </gazebo>
 
-  <gazebo reference="imu_link">
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>false</selfCollide>
-    <material>Gazebo/Orange</material>
-  </gazebo>
+      <gazebo reference="base_link">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <selfCollide>false</selfCollide>
+        <material>Gazebo/DarkGrey</material>
+      </gazebo>
 
-  <gazebo reference="oled_screen_link">
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>false</selfCollide>
-    <material>Gazebo/BlueGlow</material>
-  </gazebo>
+      <gazebo reference="top_shell_link">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <selfCollide>false</selfCollide>
+        <material>Gazebo/DarkGrey</material>
+      </gazebo>
 
-  <gazebo reference="wheel_back_left_link">
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>false</selfCollide>
-    <material>Gazebo/Black</material>
-  </gazebo>
+      <gazebo reference="accessories_link">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <selfCollide>false</selfCollide>
+        <material>Gazebo/Black</material>
+      </gazebo>
 
-  <gazebo reference="wheel_front_left_link">
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>false</selfCollide>
-    <material>Gazebo/Black</material>
-  </gazebo>
+      <gazebo reference="accessories1_link">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <selfCollide>false</selfCollide>
+        <material>Gazebo/Black</material>
+      </gazebo>
 
-  <gazebo reference="wheel_front_right_link">
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>false</selfCollide>
-    <material>Gazebo/Black</material>
-  </gazebo>
+      <gazebo reference="imu_link">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <selfCollide>false</selfCollide>
+        <material>Gazebo/Orange</material>
+      </gazebo>
 
-  <gazebo reference="wheel_back_right_link">
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>false</selfCollide>
-    <material>Gazebo/Black</material>
-  </gazebo>
+      <gazebo reference="oled_screen_link">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <selfCollide>false</selfCollide>
+        <material>Gazebo/BlueGlow</material>
+      </gazebo>
 
-  <gazebo>
-    <!-- <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
-      <robotNamespace></robotNamespace>
-      <updateRate>100.0</updateRate>
-      <leftFrontJoint>wheel_front_left_joint</leftFrontJoint>
-      <rightFrontJoint>wheel_front_right_joint</rightFrontJoint>
-      <leftRearJoint>wheel_back_left_joint</leftRearJoint>
-      <rightRearJoint>wheel_back_right_joint</rightRearJoint>
-      <wheelSeparation>${wheel_separation}</wheelSeparation>
-      <wheelDiameter>${2*wheel_radius}</wheelDiameter>
-      <torque>2</torque>
-      <commandTopic>cmd_vel</commandTopic>
-      <odometryTopic>odom</odometryTopic>
-      <odometryFrame>odom</odometryFrame>
-      <robotBaseFrame>base_footprint</robotBaseFrame>
-      <publishWheelTF>true</publishWheelTF>
-      <publishOdom>true</publishOdom>
-      <publishWheelJointState>true</publishWheelJointState>
-      <covariance_x>0.0001</covariance_x>
-      <covariance_y>0.0001</covariance_y>
-      <covariance_yaw>0.01</covariance_yaw>
-      <broadcastTF>true</broadcastTF>
-    </plugin> -->
-  </gazebo>
+      <gazebo reference="wheel_back_left_link">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <selfCollide>false</selfCollide>
+        <material>Gazebo/Black</material>
+      </gazebo>
 
+      <gazebo reference="wheel_front_left_link">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <selfCollide>false</selfCollide>
+        <material>Gazebo/Black</material>
+      </gazebo>
+
+      <gazebo reference="wheel_front_right_link">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <selfCollide>false</selfCollide>
+        <material>Gazebo/Black</material>
+      </gazebo>
+
+      <gazebo reference="wheel_back_right_link">
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <selfCollide>false</selfCollide>
+        <material>Gazebo/Black</material>
+      </gazebo>
+  </xacro:macro>
 </robot>

@@ -19,5 +19,13 @@ install(DIRECTORY launch/
   DESTINATION share/${PROJECT_NAME}/launch
 )
 
+install(DIRECTORY ros2_control/
+  DESTINATION share/${PROJECT_NAME}/ros2_control
+)
+
+install(DIRECTORY config/
+  DESTINATION share/${PROJECT_NAME}/config
+)
+
 # ament package definition
 ament_package()
