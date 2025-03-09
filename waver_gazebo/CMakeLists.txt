@@ -12,7 +12,7 @@ find_package(xacro REQUIRED)
 
 # 2) Install any resource directories (launch files, worlds, etc.) into share/
 install(
-  DIRECTORY launch world
+  DIRECTORY launch world config
   DESTINATION share/${PROJECT_NAME}
 )
 

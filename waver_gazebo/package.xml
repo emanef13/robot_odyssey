@@ -38,6 +38,7 @@
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>velocity_controllers</exec_depend>
   <exec_depend>xacro</exec_depend>
+  <exec_depend>robot_localization</exec_depend>
   
 
   <!-- If you have message/service definitions in this package, you’d add them here. -->

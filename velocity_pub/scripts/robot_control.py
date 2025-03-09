@@ -22,45 +22,36 @@ class Commander(Node):
         self.vel = np.array([0,0,0,0], float) #left_front, right_front, left_rear, right_rear
 
         self.pub_vel = self.create_publisher(Float64MultiArray, '/forward_velocity_controller/commands', 10)
+
+        self.subscription = self.create_subscription(
+            Twist,
+            'cmd_vel',
+            self.listener_callback,
+            10)
+        
         self.timer = self.create_timer(timer_period, self.timer_callback)
+        self.linear_velocity = 0.0
+        self.angular_velocity = 0.0
+
+    def listener_callback(self, data):
+        """Receives velocity commands from cmd_vel and updates linear/angular velocities."""
+        self.linear_velocity = data.linear.x
+        self.angular_velocity = data.angular.z
 
     def timer_callback(self):
-        global vel_msg, mode_selection
-
         """Computes and publishes wheel velocities based on cmd_vel input."""
-        # Compute left and right wheel velocities using differential drive kinematics
-        v_l = (vel_msg.linear.x - vel_msg.angular.z * self.wheel_base / 2) / self.wheel_radius
-        v_r = (vel_msg.linear.x + vel_msg.angular.z * self.wheel_base / 2) / self.wheel_radius
+        v_l = (self.linear_velocity - self.angular_velocity * self.wheel_base / 2) / self.wheel_radius
+        v_r = (self.linear_velocity + self.angular_velocity * self.wheel_base / 2) / self.wheel_radius
 
-        # Apply same velocity to front and rear wheels
         self.vel[0] = v_l  # Left front
         self.vel[1] = v_r  # Right front
         self.vel[2] = v_l  # Left rear
         self.vel[3] = v_r  # Right rear
 
-        # Publish wheel velocities
         vel_array = Float64MultiArray(data=self.vel)
         self.pub_vel.publish(vel_array)
 
-class Joy_subscriber(Node):
-
-    def __init__(self):
-        super().__init__('joy_subscriber')
-        self.subscription = self.create_subscription(
-            Joy,
-            'joy',
-            self.listener_callback,
-            10)
-        self.subscription
-
-    def listener_callback(self, data):
-        global vel_msg, mode_selection
-
-        vel_msg.linear.x = data.axes[1]*0.3
-        vel_msg.angular.z = data.axes[2]
-
-class Teleop_subscriber(Node):
-
+class TeleopSubscriber(Node):
     def __init__(self):
         super().__init__('teleop_subscriber')
         self.subscription = self.create_subscription(
@@ -71,17 +62,47 @@ class Teleop_subscriber(Node):
         self.subscription
 
     def listener_callback(self, data):
-        global vel_msg, mode_selection
+        """Passes cmd_vel messages to the robot."""
+        pass  # The `Commander` node already listens to `cmd_vel`
 
-        vel_msg.linear.x = data.linear.x
-        vel_msg.angular.z = data.angular.z
+class JoySubscriber(Node):
+    def __init__(self):
+        super().__init__('joy_subscriber')
+
+        # Joystick configuration
+        self.max_linear_speed = 0.3  # Maximum linear speed (m/s)
+        self.max_angular_speed = 1.5  # Maximum angular speed (rad/s)
+
+        # Define which axes/buttons control movement
+        self.linear_axis = 1  # Left stick vertical (up/down)
+        self.angular_axis = 2  # Right stick horizontal (left/right)
+
+        # Create publisher for cmd_vel
+        self.pub_cmd_vel = self.create_publisher(Twist, 'cmd_vel', 10)
+
+        # Subscribe to /joy topic
+        self.subscription = self.create_subscription(
+            Joy,
+            'joy',
+            self.listener_callback,
+            10)
+
+    def listener_callback(self, data):
+        """Convert joystick input to Twist and publish to cmd_vel."""
+        twist_msg = Twist()
+        
+        # Map joystick axes to linear and angular velocities
+        twist_msg.linear.x = data.axes[self.linear_axis] * self.max_linear_speed
+        twist_msg.angular.z = data.axes[self.angular_axis] * self.max_angular_speed
+
+        self.pub_cmd_vel.publish(twist_msg)
 
 if __name__ == '__main__':
-    rclpy.init(args=None)
-    
+    rclpy.init()
+
     commander = Commander()
-    joy_subscriber = Joy_subscriber()
-    teleop_subscriber = Teleop_subscriber()
+    joy_subscriber = JoySubscriber()
+    teleop_subscriber = TeleopSubscriber()
 
     executor = rclpy.executors.MultiThreadedExecutor()
     executor.add_node(commander)
@@ -90,13 +111,13 @@ if __name__ == '__main__':
 
     executor_thread = threading.Thread(target=executor.spin, daemon=True)
     executor_thread.start()
-    rate = commander.create_rate(2)
+
     try:
         while rclpy.ok():
-            rate.sleep()
+            pass
     except KeyboardInterrupt:
         pass
-    
+
     rclpy.shutdown()
     executor_thread.join()
 
