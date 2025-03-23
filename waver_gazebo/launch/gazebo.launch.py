@@ -138,6 +138,6 @@ def generate_launch_description():
         robot_state_publisher,
         spawn_robot,
         bridge,
-        robot_localization_node,
+        # robot_localization_node,
         rviz,
     ])

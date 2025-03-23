@@ -1,6 +1,6 @@
 amcl:
   ros__parameters:
-    alpha1: 0.8
+    alpha1: 0.2
     alpha2: 0.2
     alpha3: 0.2
     alpha4: 0.2
@@ -20,7 +20,6 @@ amcl:
     max_particles: 2000
     min_particles: 500
     odom_frame_id: "odom"
-    global_frame_id: "map"
     pf_err: 0.05
     pf_z: 0.99
     recovery_alpha_fast: 0.0
@@ -435,5 +434,5 @@ loopback_simulator:
     base_frame_id: "base_footprint"
     odom_frame_id: "odom"
     map_frame_id: "map"
-    scan_frame_id: "ldlidar_link"  # tb4_loopback_simulator.launch.py remaps to 'rplidar_link'
+    scan_frame_id: "base_scan"  # tb4_loopback_simulator.launch.py remaps to 'rplidar_link'
     update_duration: 0.02

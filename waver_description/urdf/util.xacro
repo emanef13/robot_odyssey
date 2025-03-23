@@ -112,7 +112,7 @@
     <xacro:property name="lidar_max_angle" value="${pi}" />
     <xacro:property name="lidar_min_angle" value="-${pi}" />
     <xacro:property name="lidar_resolution" value="1" />
-    <xacro:property name="lidar_frequency" value="10" />
+    <xacro:property name="lidar_frequency" value="50" />
     <xacro:property name="lidar_transform" value="0 0 0 0 0 0" />
 
 </robot>
