@@ -102,6 +102,7 @@
     <xacro:property name="mass_center_wbr" value="${pos_x_wbr} ${pos_y_wbr} ${pos_z_wbr}" />
     <xacro:property name="position_wbr" value="${pos_y_wbr} ${-pos_x_wbr} ${-pos_z_wbr}" />
     <xacro:property name="position_wbr_joint" value="${-pos_y_wbr} ${pos_x_wbr} ${pos_z_wbr}"/>
+
     <!-- Lidar specifications -->
     <xacro:property name="mass_lidar" value="0.045" />
     <xacro:property name="lidar_model" value="D500" />
@@ -114,5 +115,15 @@
     <xacro:property name="lidar_resolution" value="1" />
     <xacro:property name="lidar_frequency" value="10" />
     <xacro:property name="lidar_transform" value="0 0 0 0 0 0" />
+
+    <!-- Camera specifications -->
+    <xacro:property name="mass_camera" value="0.02" />
+    <xacro:property name="camera_model" value="IMX335" />
+    <xacro:property name="camera_link" value="camera_link" />
+    <xacro:property name="image_height" value="1080" />
+    <xacro:property name="image_width" value="1920" />
+    <xacro:property name="camera_fov" value="2.53" />
+    <xacro:property name="camera_frequency" value="30" />
+    <xacro:property name="camera_transform" value="0 0 0 0 0 0" />
 
 </robot>

@@ -42,9 +42,14 @@ def generate_launch_description():
     gui_arg = DeclareLaunchArgument('gui', default_value='true')
     headless_arg = DeclareLaunchArgument('headless', default_value='false')
     debug_arg = DeclareLaunchArgument('debug', default_value='false')
+    default_world = os.path.join(
+        get_package_share_directory('waver_gazebo'),
+        'world',
+        'coworking'      # or .world if using Gazebo classic
+    )
     world_arg = DeclareLaunchArgument(
         'world_name',
-        default_value='empty',  # ✅ Use Gazebo's built-in empty world
+        default_value=default_world,  # ✅ Use Gazebo's built-in empty world
         description='Path to the world file'
     )
     
@@ -138,6 +143,6 @@ def generate_launch_description():
         robot_state_publisher,
         spawn_robot,
         bridge,
-        robot_localization_node,
+        # robot_localization_node,
         rviz,
     ])

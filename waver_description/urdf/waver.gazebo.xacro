@@ -13,22 +13,21 @@
           <right_joint>wheel_front_right_joint</right_joint>
           <right_joint>wheel_back_right_joint</right_joint>
 
-          <wheel_separation>0.156</wheel_separation>
-          <wheel_radius>0.026</wheel_radius> 
+          <wheel_separation>0.188</wheel_separation>
+          <wheel_radius>40.6e-3"</wheel_radius>
 
           <!-- Control gains and limits (optional) -->
-          <max_velocity>3.0</max_velocity>                <!-- Max linear velocity in m/s -->
+          <max_velocity>1.25</max_velocity>                <!-- Max linear velocity in m/s -->
           <max_linear_acceleration>1</max_linear_acceleration>
           <min_linear_acceleration>-1</min_linear_acceleration>
           <max_angular_acceleration>2</max_angular_acceleration>
           <min_angular_acceleration>-2</min_angular_acceleration>
-          <max_linear_velocity>0.5</max_linear_velocity>
+          <!-- <max_linear_velocity>0.5</max_linear_velocity>
           <min_linear_velocity>-0.5</min_linear_velocity>
           <max_angular_velocity>1</max_angular_velocity>
-          <min_angular_velocity>-1</min_angular_velocity>
+          <min_angular_velocity>-1</min_angular_velocity> -->
 
           <topic>cmd_vel</topic> 
-
           <odom_topic>odom</odom_topic>
           <frame_id>odom</frame_id> 
           <child_frame_id>base_footprint</child_frame_id> 
@@ -65,19 +64,19 @@
                 <min_angle>${lidar_min_angle}</min_angle>
                 <max_angle>${lidar_max_angle}</max_angle>
               </horizontal>
-              <vertical>
+              <!-- <vertical>
                 <samples>1</samples>
                 <resolution>0.1</resolution>
                 <min_angle>0.0</min_angle>
                 <max_angle>0.0</max_angle>
-              </vertical>
+              </vertical> -->
             </scan>
             <range>
               <min>${lidar_min_range}</min>
               <max>${lidar_max_range}</max>
               <resolution>0.01</resolution>
             </range>
-            <frame_id>/ldlidar_link</frame_id>
+            <frame_id>ldlidar_link</frame_id>
           </lidar>
           <alwaysOn>1</alwaysOn>
           <visualize>true</visualize>
@@ -94,16 +93,16 @@
         </sensor>
       </gazebo>
 
-      <gazebo reference="base_link">
+      <gazebo reference="camera_link">
         <sensor name="camera_sensor" type="camera">
-          <gz_frame_id>base_link</gz_frame_id>
+          <gz_frame_id>camera_link</gz_frame_id>
           <topic>camera/image_raw</topic>
-          <update_rate>30</update_rate>
+          <update_rate>${camera_frequency}</update_rate>
           <camera>
-            <horizontal_fov>1.57</horizontal_fov> <!-- 90 degrees FOV -->
+            <horizontal_fov>${camera_fov}</horizontal_fov> <!-- 145 degrees FOV -->
             <image>
-              <width>640</width>
-              <height>480</height>
+              <width>${image_width}</width>
+              <height>${image_height}</height>
               <format>R8G8B8</format> <!-- RGB format -->
             </image>
             <clip>
@@ -115,6 +114,7 @@
               <mean>0.0</mean>
               <stddev>0.007</stddev>
             </noise>
+            <frame_id>camera_link</frame_id>
           </camera>
           <always_on>1</always_on>
           <visualize>true</visualize>
